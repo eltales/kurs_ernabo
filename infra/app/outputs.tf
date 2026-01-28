@@ -1,11 +1,11 @@
 output "app_name" {
-  value = azurerm_linux_web_app.web.name
+  value = azurerm_linux_web_app.app.name
 }
 
 output "default_hostname" {
-  value = azurerm_linux_web_app.web.default_hostname
+  value = azurerm_linux_web_app.app.default_hostname
 }
 
 output "url" {
-  value = "https://${azurerm_linux_web_app.web.default_hostname}"
+  value = "https://${azurerm_linux_web_app.app.default_hostname}"
 }
