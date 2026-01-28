@@ -18,7 +18,7 @@ variable "plan_sku_name" {
 
 variable "docker_image" {
   type        = string
-  description = "np. marak89/bur9102a"
+  description = "np. realeltales/lekcja1"
 }
 
 variable "docker_tag" {

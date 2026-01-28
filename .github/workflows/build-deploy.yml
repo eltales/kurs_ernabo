@@ -13,7 +13,7 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     env:
-      IMAGE_NAME: marak89/bur9102a
+      IMAGE_NAME: realeltales/lekcja1
     outputs:
       image_tag: ${{ steps.vars.outputs.TAG }}
 
