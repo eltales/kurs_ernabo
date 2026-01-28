@@ -1,3 +1,7 @@
+provider "azurerm" {
+  features {}
+}
+
 # Losowy suffix, aby nazwy były unikalne globalnie
 resource "random_string" "suffix" {
   length  = 6
