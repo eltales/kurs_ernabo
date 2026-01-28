@@ -50,7 +50,7 @@ jobs:
     needs: [ build-and-push ]
     env:
       TF_IN_AUTOMATION: "true"
-      IMAGE_NAME: marak89/bur9102a
+      IMAGE_NAME: realeltales/lekcja1
 
       # AzureRM auth przez OIDC (Terraform provider + backend)
       ARM_USE_OIDC: "true"
