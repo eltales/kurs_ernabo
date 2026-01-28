@@ -1,60 +1,42 @@
-variable "location" {
-  type = string
+# Losowy suffix, aby nazwy były unikalne globalnie
+resource "random_string" "suffix" {
+  length  = 6
+  special = false
+  upper   = false
 }
 
-variable "rg_name" {
-  type = string
+resource "azurerm_resource_group" "app" {
+  name     = var.rg_name
+  location = var.location
+  tags     = var.tags
 }
 
-variable "app_name" {
-  type        = string
-  description = "Baza nazwy aplikacji; finalnie będzie z suffixem dla unikalności."
+resource "azurerm_service_plan" "app" {
+  name                = "${var.app_name}-plan"
+  resource_group_name = azurerm_resource_group.app.name
+  location            = azurerm_resource_group.app.location
+  os_type             = "Linux"
+  sku_name            = var.plan_sku_name
+  tags                = var.tags
 }
 
-variable "plan_sku_name" {
-  type    = string
-  default = "B1"
-}
+resource "azurerm_linux_web_app" "app" {
+  name                = "${var.app_name}-${random_string.suffix.result}"
+  resource_group_name = azurerm_resource_group.app.name
+  location            = azurerm_service_plan.app.location
+  service_plan_id     = azurerm_service_plan.app.id
 
-variable "docker_image" {
-  type        = string
-  description = "np. realeltales/lekcja1"
-}
+  site_config {
+    linux_fx_version = "DOCKER|${var.docker_image}:${var.docker_tag}"
+    always_on        = true
+  }
 
-variable "docker_tag" {
-  type        = string
-  description = "np. 20260128-1905"
-}
+  app_settings = {
+    "WEBSITES_PORT"                   = var.container_port
+    "DOCKER_REGISTRY_SERVER_URL"      = var.docker_registry_url
+    "DOCKER_REGISTRY_SERVER_USERNAME" = var.docker_registry_username
+    "DOCKER_REGISTRY_SERVER_PASSWORD" = var.docker_registry_password
+  }
 
-variable "docker_registry_url" {
-  type        = string
-  description = "Jawnie ustawione (Docker Hub = https://docker.io). Pomaga uniknąć problemów z referencją obrazu."
-  default     = "https://docker.io"
-}
-
-variable "container_port" {
-  type    = number
-  default = 80
-}
-
-# Ustaw na true, jeśli obraz jest prywatny (wtedy potrzebujesz user/pass dla registry)
-variable "use_docker_registry_auth" {
-  type    = bool
-  default = false
-}
-
-variable "docker_registry_username" {
-  type    = string
-  default = ""
-}
-
-variable "docker_registry_password" {
-  type      = string
-  default   = ""
-  sensitive = true
-}
-
-variable "tags" {
-  type    = map(string)
-  default = {}
+  tags = var.tags
 }
