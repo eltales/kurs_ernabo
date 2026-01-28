@@ -1,5 +1,5 @@
 output "tfstate_rg_name" {
-  value = azurerm_resource_group.tfstate.name
+  value = data.azurerm_resource_group.tfstate.name
 }
 
 output "storage_account_name" {
