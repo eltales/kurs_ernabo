@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
 
-# WAŻNE: id-token: write jest wymagane do OIDC (token z GitHuba dla Azure)
+# WAŻNE: id-token: write jest wymagane do OIDC (token z GitHuba dla Azure) s
 permissions:
   contents: read
   id-token: write
