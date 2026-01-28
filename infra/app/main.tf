@@ -37,9 +37,6 @@ resource "azurerm_linux_web_app" "app" {
 
   app_settings = {
     "WEBSITES_PORT"                   = var.container_port
-    "DOCKER_REGISTRY_SERVER_URL"      = var.docker_registry_url
-    "DOCKER_REGISTRY_SERVER_USERNAME" = var.docker_registry_username
-    "DOCKER_REGISTRY_SERVER_PASSWORD" = var.docker_registry_password
   }
 
   tags = var.tags
