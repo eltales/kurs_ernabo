@@ -11,7 +11,7 @@ resource "azurerm_resource_group" "tfstate" {
   tags     = var.tags
 }
 
-resource "azurerm_storage_account" "tfstate" {  # Tworzymy SA
+resource "azurerm_storage_account" "tfstate" {
   name                     = var.storage_account_name
   resource_group_name      = azurerm_resource_group.tfstate.name
   location                 = azurerm_resource_group.tfstate.location
@@ -20,8 +20,8 @@ resource "azurerm_storage_account" "tfstate" {  # Tworzymy SA
   tags                     = var.tags
 }
 
-resource "azurerm_storage_container" "tfstate" {  # Nowy kontener
-  name                  = var.container_name
-  storage_account_name  = data.azurerm_storage_account.tfstate.name  # data!
+resource "azurerm_storage_container" "tfstate_container" {
+  name                 = var.container_name
+  storage_account_id   = azurerm_storage_account.tfstate.id  # używamy id zamiast name
   container_access_type = "private"
 }
