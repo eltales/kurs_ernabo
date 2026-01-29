@@ -1,7 +1,7 @@
 provider "azurerm" {
   features {}
 
-  subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  subscription-id = ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 }
 
 
