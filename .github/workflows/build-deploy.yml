@@ -53,8 +53,8 @@ jobs:
       IMAGE_NAME: realeltales/lekcja1
 
       TF_VAR_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-     TF_VAR_location: ${{ secrets.AZURE_LOCATION }}
-     TF_VAR_tfstate_rg_name: ${{ secrets.TFSTATE_RG_NAME }}
+      TF_VAR_location: ${{ secrets.AZURE_LOCATION }}
+      TF_VAR_tfstate_rg_name: ${{ secrets.TFSTATE_RG_NAME }}
       # AzureRM auth przez OIDC (Terraform provider + backend)
       ARM_USE_OIDC: "true"
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
