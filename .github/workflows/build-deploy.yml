@@ -155,18 +155,18 @@ jobs:
         with:
           terraform_wrapper: false
 
-      # (1) Bootstrap: tworzymy Storage Account + Container na tfstate
-      - name: Terraform init (bootstrap)
-        run: terraform -chdir=infra/bootstrap init -input=false
-
-      - name: Terraform apply (bootstrap)
-        run: |
-          terraform -chdir=infra/bootstrap apply -auto-approve -input=false \
-            -var="location=${{ secrets.AZURE_LOCATION }}" \
-            -var="tfstate_rg_name=${{ secrets.TFSTATE_RG_NAME }}" \
-            -var="storage_account_name=${{ secrets.TFSTATE_STORAGE_ACCOUNT }}" \
-            -var="container_name=${{ secrets.TFSTATE_CONTAINER_NAME }}" \
-            -var="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+      ## (1) Bootstrap: tworzymy Storage Account + Container na tfstate
+      #- name: Terraform init (bootstrap)
+      #  run: terraform -chdir=infra/bootstrap init -input=false
+#
+      #- name: Terraform apply (bootstrap)
+      #  run: |
+      #    terraform -chdir=infra/bootstrap apply -auto-approve -input=false \
+      #      -var="location=${{ secrets.AZURE_LOCATION }}" \
+      #      -var="tfstate_rg_name=${{ secrets.TFSTATE_RG_NAME }}" \
+      #      -var="storage_account_name=${{ secrets.TFSTATE_STORAGE_ACCOUNT }}" \
+      #      -var="container_name=${{ secrets.TFSTATE_CONTAINER_NAME }}" \
+      #      -var="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}"
 
       # (2) Deploy aplikacji: init z backendem remote
       - name: Terraform init (app, remote backend)
