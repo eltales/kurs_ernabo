@@ -10,6 +10,79 @@ permissions:
   id-token: write
 
 jobs:
+  test-image:
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: realeltales/lekcja1
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # 1) Lint Dockerfile (szybko wylapuje bledy i zle praktyki)
+      - name: Lint Dockerfile (Hadolint)
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+          failure-threshold: warning
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image (load for tests)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          load: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:ci
+
+      # 2) Uruchomienie kontenera i testy runtime
+      - name: Run container
+        run: |
+          docker run -d --name app-ci -p 8080:80 ${{ env.IMAGE_NAME }}:ci
+          # proste oczekiwanie az serwis wstanie
+          for i in {1..20}; do
+            if curl -fsS http://localhost:8080/ >/dev/null; then
+              echo "HTTP is up"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "HTTP did not become ready"
+          docker logs app-ci || true
+          exit 1
+
+      - name: Validate Nginx config (nginx -t)
+        run: |
+          docker exec app-ci nginx -t
+
+      - name: Smoke test HTTP (status + headers)
+        run: |
+          curl -i http://localhost:8080/ | head -n 30
+          # przykladowa asercja na status 200/301/302 (dostosuj pod aplikacje)
+          code=$(curl -o /dev/null -s -w "%{http_code}" http://localhost:8080/)
+          if [[ "$code" != "200" && "$code" != "301" && "$code" != "302" ]]; then
+            echo "Unexpected HTTP code: $code"
+            exit 1
+          fi
+
+      - name: Cleanup container
+        if: always()
+        run: |
+          docker rm -f app-ci || true
+
+      # 3) Skan podatnosci (po buildzie)
+      - name: Scan image for vulnerabilities (Trivy)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}:ci
+          format: table
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: 1
+
   build-and-push:
     runs-on: ubuntu-latest
     env:
