@@ -15,7 +15,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # 1) Lint Dockerfile (szybko wyĹapuje bĹÄdy i zĹe praktyki)
+      # 1) Lint Dockerfile (szybko wylapuje bledy i zle praktyki)
       - name: Lint Dockerfile (Hadolint)
         uses: hadolint/hadolint-action@v3.1.0
         with:
@@ -38,7 +38,7 @@ jobs:
       - name: Run container
         run: |
           docker run -d --name app-ci -p 8080:80 ${{ env.IMAGE_NAME }}:ci
-          # proste oczekiwanie aĹź serwis wstanie
+          # proste oczekiwanie az serwis wstanie
           for i in {1..20}; do
             if curl -fsS http://localhost:8080/ >/dev/null; then
               echo "HTTP is up"
@@ -57,7 +57,7 @@ jobs:
       - name: Smoke test HTTP (status + headers)
         run: |
           curl -i http://localhost:8080/ | head -n 30
-          # przykĹadowa asercja na status 200/301/302 (dostosuj pod aplikacjÄ)
+          # przykladowa asercja na status 200/301/302 (dostosuj pod aplikacje)
           code=$(curl -o /dev/null -s -w "%{http_code}" http://localhost:8080/)
           if [[ "$code" != "200" && "$code" != "301" && "$code" != "302" ]]; then
             echo "Unexpected HTTP code: $code"
@@ -69,7 +69,7 @@ jobs:
         run: |
           docker rm -f app-ci || true
 
-      # 3) Skan podatnoĹci (po buildzie)
+      # 3) Skan podatnosci (po buildzie)
       - name: Scan image for vulnerabilities (Trivy)
         uses: aquasecurity/trivy-action@0.28.0
         with:
