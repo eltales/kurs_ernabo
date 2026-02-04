@@ -31,12 +31,16 @@ resource "azurerm_linux_web_app" "app" {
   service_plan_id     = azurerm_service_plan.app.id
 
   site_config {
-    linux_fx_version = "DOCKER|${var.docker_image}:${var.docker_tag}"
-    always_on        = true
+    always_on = true
+    
+    application_stack {
+      docker_image_name   = "${var.docker_image}:${var.docker_tag}"
+      docker_registry_url = "https://index.docker.io"
+    }
   }
 
   app_settings = {
-    "WEBSITES_PORT"                   = var.container_port
+    "WEBSITES_PORT" = var.container_port
   }
 
   tags = var.tags
