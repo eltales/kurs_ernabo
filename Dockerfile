@@ -1,4 +1,4 @@
-FROM nginx:1.27
+FROM nginx:stable
 
 COPY app /usr/share/nginx/html
 
